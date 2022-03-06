@@ -1,5 +1,6 @@
 package utils;
 
+import entities.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -22,6 +23,11 @@ public class HibernateSingleton {
             // SessionFactory is immutable.
 
             INSTANCE = new MetadataSources(registry)
+                    .addAnnotatedClass(Lesson.class)
+                    .addAnnotatedClass(Staff.class)
+                    .addAnnotatedClass(Student.class)
+                    .addAnnotatedClass(Teacher.class)
+                    .addAnnotatedClass(Term.class)
                     .buildMetadata()
                     .buildSessionFactory();
 

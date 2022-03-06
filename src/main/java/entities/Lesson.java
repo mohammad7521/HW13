@@ -13,11 +13,9 @@ public class Lesson {
 
 
     @Id
-    private int id;
+    private Long id;
 
     private String name;
-
     private int unit;
-
     private int grade;
 }

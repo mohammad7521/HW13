@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Staff {
 
     @Id
-    private int id;
+    private Long id;
 
     private String firstName;
     private String lastName;

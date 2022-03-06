@@ -12,5 +12,5 @@ import javax.persistence.*;
 public class Term {
 
     @Id
-    private int id;
+    private Long id;
 }

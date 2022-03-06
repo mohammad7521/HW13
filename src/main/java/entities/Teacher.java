@@ -2,6 +2,7 @@ package entities;
 
 import lombok.*;
 import javax.persistence.*;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -13,11 +14,14 @@ public class Teacher {
 
 
     @Id
-    private int id;
+    private Long id;
 
 
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
+
+//    @ManyToMany
+//    private List<Lesson> lessonList;
 }
