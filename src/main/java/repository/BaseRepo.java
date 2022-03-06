@@ -1,6 +1,6 @@
 package repository;
 
-public interface StaffRepo<T>{
+public interface BaseRepo<T>{
 
     public long add(T t);
 
@@ -9,6 +9,8 @@ public interface StaffRepo<T>{
     public boolean update (T t);
 
     public T showInfo(long id);
+
+    public int hqlTruncate(String tableName);
 
 
 }
