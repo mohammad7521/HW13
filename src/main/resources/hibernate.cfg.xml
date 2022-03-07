@@ -6,7 +6,7 @@
     <session-factory>
         <property name="connection.url">jdbc:postgresql://localhost:5432/postgres</property>
         <property name="connection.username">postgres</property>
-        <property name="connection.password">6642</property>
+        <property name="connection.password">66426623</property>
 
         <property name="hibernate.hbm2ddl.auto">create-drop</property> <!-- Generates Database Schema. Do not Use In PRODUCTION! -->
         <property name="show_sql">true</property>
