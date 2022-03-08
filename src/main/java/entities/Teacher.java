@@ -1,6 +1,8 @@
 package entities;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class Teacher {
 
 
     @Id
-    private Long id;
+    private Long TeacherID;
 
 
     private String firstName;
@@ -22,6 +24,8 @@ public class Teacher {
     private String userName;
     private String password;
 
-//    @ManyToMany
-//    private List<Lesson> lessonList;
+
+    @ManyToMany (mappedBy = "teacherLessonList")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    private List<Lesson> lessonList;
 }
