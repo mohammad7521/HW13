@@ -60,9 +60,9 @@ public class BasicCrud<T> {
     }
 
 
-    public T showInfo(Long ID,T t) {
+    public T showInfo(Long ID,Class <T> tClass) {
         var session=sessionFactory.openSession();
-        return (T) session.find(t.getClass(),ID);
+        return (T) session.find(tClass,ID);
 
     }
 

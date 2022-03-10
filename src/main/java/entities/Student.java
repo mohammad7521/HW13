@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -24,7 +25,12 @@ public class Student {
     private String username;
     private String password;
 
-    @ManyToMany (mappedBy = "studentLessonList")
+
+
+    @ManyToMany
+    @JoinTable(name="student_lesson",
+            joinColumns = @JoinColumn(name="studentId"),
+            inverseJoinColumns = @JoinColumn(name = "lessonId"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private List<Lesson> studentLesson;
+    private Set<Lesson> studentLessonList;
 }

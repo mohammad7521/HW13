@@ -1,8 +1,11 @@
 package entities;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -14,27 +17,27 @@ public class Lesson {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long lessonId;
 
     private String name;
     private int unit;
     private int grade;
 
-    @ManyToMany
-    @JoinTable(name="lesson_student",
-            joinColumns = @JoinColumn(name="lessonId"),
-            inverseJoinColumns = @JoinColumn(name = "studentId"))
-    private List<Student> studentLessonList;
+    @ManyToMany (mappedBy = "studentLessonList")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<Student> lessonStudent;
 
-    @ManyToMany
-    @JoinTable(name="lesson_teacher",
-            joinColumns = @JoinColumn(name="lessonId"),
-            inverseJoinColumns = @JoinColumn(name = "teacherId"))
-    private List<Teacher> teacherLessonList;
 
-    @ManyToMany
-    @JoinTable(name="lesson_term",
-            joinColumns = @JoinColumn(name="lessonId"),
-            inverseJoinColumns = @JoinColumn(name = "termId"))
-    private List<Term> termLessonList;
+    @ManyToMany (mappedBy = "teacherLessonList")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Teacher> lessonTeacher;
+
+
+
+    @ManyToMany (mappedBy = "termLessonList")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Term> lessonTerm;
+
+
 }

@@ -1,9 +1,14 @@
 package repository;
 
+import entities.Lesson;
 import entities.Student;
 import org.junit.jupiter.api.*;
 import utils.HibernateSingleton;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,20 +30,30 @@ class StudentRepoTest {
     void addAndShowInfo() {
 
         //arrange
-        var student=new Student(null,"firstName","firstName","Username","password");
+        Set<Lesson> lessonList=new HashSet<>();
+        Lesson l1=new Lesson(null,"Physics",2,3,null,null,null);
+        Lesson l2=new Lesson(null,"math",4,12,null,null,null);
+
+        lessonList.add(l1);
+        lessonList.add(l2);
+        var student=new Student(null,"firstName","lastName","Username","password",
+                lessonList);
+
+        student.setStudentLessonList(lessonList);
 
         //act
         studentRepo.add(student);
 
         //assert
-        Student loadedStudent=studentRepo.showInfo(student.getId(),student);
+        Student loadedStudent=studentRepo.showInfo(student.getStudentId(),Student.class);
         assertAll(
                 ()->assertNotNull(loadedStudent),
-                ()->assertEquals(loadedStudent.getId(),student.getId()),
+                ()->assertEquals(loadedStudent.getStudentId(),student.getStudentId()),
                 ()->assertEquals(loadedStudent.getFirstName(),student.getFirstName()),
-                ()->assertEquals(loadedStudent.getFirstName(),student.getLastName()),
+                ()->assertEquals(loadedStudent.getLastName(),student.getLastName()),
                 ()->assertEquals(loadedStudent.getUsername(),student.getUsername()),
-                ()->assertEquals(loadedStudent.getPassword(),student.getPassword())
+                ()->assertEquals(loadedStudent.getPassword(),student.getPassword()),
+                ()->assertEquals(loadedStudent.getStudentLessonList(),student.getStudentLessonList())
         );
     }
 
@@ -46,7 +61,8 @@ class StudentRepoTest {
     void remove() {
 
         //arrange
-        var student=new Student(null,"firstName","firstName","Username","password");
+        var student=new Student(null,"firstName","firstName","Username","password",
+                null);
 
 
         //act
@@ -62,7 +78,8 @@ class StudentRepoTest {
     @Test
     void update() {
         //arrange
-        var student=new Student(null,"firstName","firstName","Username","password");
+        var student=new Student(null,"firstName","firstName","Username","password",
+                null);
 
 
 
@@ -75,10 +92,10 @@ class StudentRepoTest {
         student.setLastName("mohammadi");
         studentRepo.update(student);
 
-        Student loadedStudent=studentRepo.showInfo(student.getId(),student);
+        Student loadedStudent=studentRepo.showInfo(student.getStudentId(),Student.class);
         assertAll(
                 ()->assertNotNull(loadedStudent),
-                ()->assertEquals(loadedStudent.getId(),student.getId()),
+                ()->assertEquals(loadedStudent.getStudentId(),student.getStudentId()),
                 ()->assertEquals(loadedStudent.getUsername(),student.getUsername()),
                 ()->assertEquals(loadedStudent.getFirstName(),student.getFirstName()),
                 ()->assertEquals(loadedStudent.getLastName(),student.getLastName()),
@@ -87,11 +104,11 @@ class StudentRepoTest {
     }
 
 
-    @AfterEach
-    void tearDown() {
-        studentRepo.hqlTruncate("Student");
-    }
-
+//    @AfterEach
+//    void tearDown() {
+//        studentRepo.hqlTruncate("Student");
+//    }
+//
 
 
 

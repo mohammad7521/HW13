@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @AllArgsConstructor
@@ -15,9 +16,13 @@ import java.util.List;
 public class Term {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long termId;
 
-    @ManyToMany (mappedBy = "termLessonList")
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private List<Lesson> lessonList;
+    @ManyToMany
+    @JoinTable(name="term_lesson",
+            joinColumns = @JoinColumn(name="termId"),
+            inverseJoinColumns = @JoinColumn(name = "lessonId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<Lesson> termLessonList;
 }

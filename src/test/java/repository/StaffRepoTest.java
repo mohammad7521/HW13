@@ -31,7 +31,7 @@ class StaffRepoTest {
         staffRepo.add(staff);
 
         //assert
-        Staff loadedStaff=staffRepo.showInfo(staff.getId(),staff);
+        Staff loadedStaff=staffRepo.showInfo(staff.getId(),Staff.class);
         assertAll(
                 ()->assertNotNull(loadedStaff),
                 ()->assertEquals(loadedStaff.getId(),staff.getId()),
@@ -75,7 +75,7 @@ class StaffRepoTest {
         staff.setLastName("mohammadi");
         staffRepo.update(staff);
 
-        Staff loadedStaff=staffRepo.showInfo(staff.getId(),staff);
+        Staff loadedStaff=staffRepo.showInfo(staff.getId(),Staff.class);
         assertAll(
                 ()->assertNotNull(loadedStaff),
                 ()->assertEquals(loadedStaff.getId(),staff.getId()),

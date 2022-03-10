@@ -27,19 +27,20 @@ class TeacherRepoTest {
     void addAndShowInfo() {
 
         //arrange
-        var teacher=new Teacher(null,"firstName","firstName","Username","password",50000000,false);
+        var teacher=new Teacher(null,"firstName","lastName","username",
+                "password",24224,false,null);
 
         //act
         teacherRepo.add(teacher);
 
         //assert
-        Teacher loadedTeacher=teacherRepo.showInfo(teacher.getId(),teacher);
+        Teacher loadedTeacher=teacherRepo.showInfo(teacher.getTeacherID(),Teacher.class);
         assertAll(
                 ()->assertNotNull(loadedTeacher),
-                ()->assertEquals(loadedTeacher.getId(),teacher.getId()),
+                ()->assertEquals(loadedTeacher.getTeacherID(),teacher.getTeacherID()),
                 ()->assertEquals(loadedTeacher.getFirstName(),teacher.getFirstName()),
                 ()->assertEquals(loadedTeacher.getLastName(),teacher.getLastName()),
-                ()->assertEquals(loadedTeacher.getUsername(),teacher.getUsername()),
+                ()->assertEquals(loadedTeacher.getUserName(),teacher.getUserName()),
                 ()->assertEquals(loadedTeacher.getPassword(),teacher.getPassword())
         );
     }
@@ -48,7 +49,8 @@ class TeacherRepoTest {
     void remove() {
 
         //arrange
-        var teacher=new Teacher(null,"firstName","firstName","Username","password",50000000,true);
+        var teacher=new Teacher(null,"firstName","lastName","username","password",23423,
+                true,null);
 
 
         //act
@@ -64,8 +66,8 @@ class TeacherRepoTest {
     @Test
     void update() {
         //arrange
-        var teacher=new Teacher(null,"firstName","firstName","Username","password",50000000,false);
-
+        var teacher=new Teacher(null,"firstName","lastName","username","password",23423,
+                true,null);
 
 
         //act
@@ -79,11 +81,11 @@ class TeacherRepoTest {
         teacher.setSalary(45000000);
         teacherRepo.update(teacher);
 
-        Teacher loadedTeacher=teacherRepo.showInfo(teacher.getId(),teacher);
+        Teacher loadedTeacher=teacherRepo.showInfo(teacher.getTeacherID(),Teacher.class);
         assertAll(
                 ()->assertNotNull(loadedTeacher),
-                ()->assertEquals(loadedTeacher.getId(),teacher.getId()),
-                ()->assertEquals(loadedTeacher.getUsername(),teacher.getUsername()),
+                ()->assertEquals(loadedTeacher.getTeacherID(),teacher.getTeacherID()),
+                ()->assertEquals(loadedTeacher.getUserName(),teacher.getUserName()),
                 ()->assertEquals(loadedTeacher.getFirstName(),teacher.getFirstName()),
                 ()->assertEquals(loadedTeacher.getLastName(),teacher.getLastName()),
                 ()->assertEquals(loadedTeacher.getPassword(),teacher.getPassword()),

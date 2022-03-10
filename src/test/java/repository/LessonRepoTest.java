@@ -24,16 +24,16 @@ class LessonRepoTest {
     void addAndShowInfo() {
 
         //arrange
-        var lesson=new Lesson(null,"physics",3,18);
+        var lesson=new Lesson(null,"physics",3,18,null,null,null);
 
         //act
         lessonRepo.add(lesson);
 
         //assert
-        Lesson loadedLesson=lessonRepo.showInfo(lesson.getId(),lesson);
+        Lesson loadedLesson=lessonRepo.showInfo(lesson.getLessonId(),Lesson.class);
         assertAll(
                 ()->assertNotNull(loadedLesson),
-                ()->assertEquals(loadedLesson.getId(),lesson.getId()),
+                ()->assertEquals(loadedLesson.getLessonId(),lesson.getLessonId()),
                 ()->assertEquals(loadedLesson.getName(),lesson.getName()),
                 ()->assertEquals(loadedLesson.getUnit(),lesson.getUnit()),
                 ()->assertEquals(loadedLesson.getGrade(),lesson.getGrade())
@@ -44,7 +44,7 @@ class LessonRepoTest {
     void remove() {
 
         //arrange
-        var lesson=new Lesson(null,"physics",3,18);
+        var lesson=new Lesson(null,"physics",3,18,null,null,null);
 
 
         //act
@@ -60,7 +60,7 @@ class LessonRepoTest {
     @Test
     void update() {
         //arrange
-        var lesson=new Lesson(null,"physics",3,18);
+        var lesson=new Lesson(null,"physics",3,18,null,null,null);
 
 
 
@@ -73,10 +73,10 @@ class LessonRepoTest {
         lesson.setUnit(2);
         lessonRepo.update(lesson);
 
-        Lesson loadedLesson=lessonRepo.showInfo(lesson.getId(),lesson);
+        Lesson loadedLesson=lessonRepo.showInfo(lesson.getLessonId(),Lesson.class);
         assertAll(
                 ()->assertNotNull(loadedLesson),
-                ()->assertEquals(loadedLesson.getId(),lesson.getId()),
+                ()->assertEquals(loadedLesson.getLessonId(),lesson.getLessonId()),
                 ()->assertEquals(loadedLesson.getGrade(),lesson.getGrade()),
                 ()->assertEquals(loadedLesson.getName(),lesson.getName()),
                 ()->assertEquals(loadedLesson.getUnit(),lesson.getUnit())
