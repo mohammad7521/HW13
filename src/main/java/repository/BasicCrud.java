@@ -59,11 +59,18 @@ public class BasicCrud<T> {
         }
     }
 
-
-    public T showInfo(Long ID,Class <T> tClass) {
+    //based on id
+    public T showInfo(Integer ID,Class <T> tClass) {
         var session=sessionFactory.openSession();
-        return (T) session.find(tClass,ID);
+        return  session.find(tClass,ID);
 
+    }
+
+
+    //based on username
+    public T showInfo(String username,Class <T> tClass) {
+        var session=sessionFactory.openSession();
+        return session.find(tClass,username);
     }
 
 
@@ -87,15 +94,15 @@ public class BasicCrud<T> {
 
 
 
-    public List<T> showAll(T t){
+    public List<T> showAll(Class <T> tClass){
         var session=sessionFactory.openSession();
         var transaction=session.beginTransaction();
 
         List<T> list;
         try {
             CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery criteria = builder.createQuery(t.getClass());
-            criteria.from(t.getClass());
+            CriteriaQuery criteria = builder.createQuery(tClass);
+            criteria.from(tClass);
             list = session.createQuery(criteria).getResultList();
             transaction.commit();
         }catch (Exception e){

@@ -55,7 +55,7 @@ class StaffRepoTest {
 
         //assert
         staffRepo.remove(staff);
-        List<Staff> accountList=staffRepo.showAll(staff);
+        List<Staff> accountList=staffRepo.showAll(Staff.class);
         assertEquals(0,accountList.size());
     }
 

@@ -18,7 +18,7 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studentId;
+    private Integer studentId;
 
     private String firstName;
     private String lastName;
@@ -28,9 +28,15 @@ public class Student {
 
 
     @ManyToMany
-    @JoinTable(name="student_lesson",
+    @JoinTable(name="studentTerm",
             joinColumns = @JoinColumn(name="studentId"),
-            inverseJoinColumns = @JoinColumn(name = "lessonId"))
+            inverseJoinColumns = @JoinColumn(name = "termID"))
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Set<Lesson> studentLessonList;
+    private Set<Term> studentTerm;
+
+
+    public void addTerm(Term term){
+        studentTerm.add(term);
+    }
+
 }

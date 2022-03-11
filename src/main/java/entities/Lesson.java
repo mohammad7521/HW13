@@ -18,26 +18,24 @@ public class Lesson {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lessonId;
+    private Integer lessonId;
 
     private String name;
     private int unit;
     private int grade;
 
-    @ManyToMany (mappedBy = "studentLessonList")
+    @ManyToMany (mappedBy = "student_term_lesson")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Student> lessonStudent;
+    private Set<Term> student_term_lesson;
 
 
-    @ManyToMany (mappedBy = "teacherLessonList")
+    @ManyToMany (mappedBy = "teacher_term_lesson")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Teacher> lessonTeacher;
+    private List<Term> teacher_term_lesson;
 
 
 
-    @ManyToMany (mappedBy = "termLessonList")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Term> lessonTerm;
+
 
 
 }

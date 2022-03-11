@@ -18,22 +18,23 @@ public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long TeacherID;
+    private Integer TeacherID;
 
 
     private String firstName;
     private String lastName;
     private String userName;
     private String password;
-    private double salary;
+    private long salary;
     private boolean isBoardMember;
 
 
 
     @ManyToMany
-    @JoinTable(name="teacher_lesson",
+    @JoinTable(name="teacher_term",
             joinColumns = @JoinColumn(name="teacherId"),
-            inverseJoinColumns = @JoinColumn(name = "lessonId"))
+            inverseJoinColumns = @JoinColumn(name = "termId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Lesson> teacherLessonList;
+    private Set<Lesson> teacherTerm;
+
 }

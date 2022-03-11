@@ -59,7 +59,7 @@ class TeacherRepoTest {
 
         //assert
         teacherRepo.remove(teacher);
-        List<Teacher> accountList=teacherRepo.showAll(teacher);
+        List<Teacher> accountList=teacherRepo.showAll(Teacher.class);
         assertEquals(0,accountList.size());
     }
 

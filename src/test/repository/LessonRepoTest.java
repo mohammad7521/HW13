@@ -24,7 +24,7 @@ class LessonRepoTest {
     void addAndShowInfo() {
 
         //arrange
-        var lesson=new Lesson(null,"physics",3,18,null,null,null);
+        var lesson=new Lesson(null,"physics",3,18,null,null);
 
         //act
         lessonRepo.add(lesson);
@@ -44,7 +44,7 @@ class LessonRepoTest {
     void remove() {
 
         //arrange
-        var lesson=new Lesson(null,"physics",3,18,null,null,null);
+        var lesson=new Lesson(null,"physics",3,18,null,null);
 
 
         //act
@@ -53,14 +53,14 @@ class LessonRepoTest {
 
         //assert
         lessonRepo.remove(lesson);
-        List<Lesson> accountList=lessonRepo.showAll(lesson);
-        assertEquals(0,accountList.size());
+        List<Lesson> lessonList=lessonRepo.showAll(Lesson.class);
+        assertEquals(0,lessonList.size());
     }
 
     @Test
     void update() {
         //arrange
-        var lesson=new Lesson(null,"physics",3,18,null,null,null);
+        var lesson=new Lesson(null,"physics",3,18,null,null);
 
 
 

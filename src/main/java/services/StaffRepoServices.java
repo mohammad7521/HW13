@@ -2,6 +2,9 @@ package services;
 
 import entities.Staff;
 import repository.StaffRepo;
+import utils.DuplicateUser;
+
+import java.util.List;
 
 public class StaffRepoServices implements BaseServices<Staff> {
 
@@ -9,11 +12,15 @@ public class StaffRepoServices implements BaseServices<Staff> {
 
     @Override
     public Staff add(Staff staff) {
-        return staffRepo.add(staff);
+
+        if (staffRepo.showInfo(staff.getUsername(),Staff.class)!=null) {
+            return staffRepo.add(staff);
+        }
+        else throw new DuplicateUser("username already exists");
     }
 
     @Override
-    public Staff remove(long id) {
+    public Staff remove(int id) {
 
         Staff returnedStaff=staffRepo.showInfo(id,Staff.class);
         return staffRepo.remove(returnedStaff);
@@ -25,7 +32,17 @@ public class StaffRepoServices implements BaseServices<Staff> {
     }
 
     @Override
-    public Staff showInfo(long id) {
+    public Staff showInfo(int id) {
         return staffRepo.showInfo(id,Staff.class);
+    }
+
+    @Override
+    public List<Staff> showAll() {
+        return staffRepo.showAll(Staff.class);
+    }
+
+
+    public Staff showInfo(String username) {
+        return null;
     }
 }

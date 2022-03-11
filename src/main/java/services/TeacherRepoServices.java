@@ -1,7 +1,11 @@
 package services;
 
+
 import entities.Teacher;
+import utils.DuplicateUser;
 import repository.TeacherRepo;
+
+import java.util.List;
 
 public class TeacherRepoServices implements BaseServices<Teacher>{
 
@@ -14,7 +18,7 @@ public class TeacherRepoServices implements BaseServices<Teacher>{
     }
 
     @Override
-    public Teacher remove(long id) {
+    public Teacher remove(int id) {
 
         Teacher returnedTeacher=teacherRepo.showInfo(id,Teacher.class);
         return teacherRepo.remove(returnedTeacher);
@@ -26,8 +30,18 @@ public class TeacherRepoServices implements BaseServices<Teacher>{
     }
 
     @Override
-    public Teacher showInfo(long id) {
+    public Teacher showInfo(int id) {
         return teacherRepo.showInfo(id,Teacher.class);
+    }
+
+    @Override
+    public List<Teacher> showAll() {
+        return teacherRepo.showAll(Teacher.class);
+    }
+
+
+    public Teacher showInfo(String username) {
+        return null;
     }
 
 }

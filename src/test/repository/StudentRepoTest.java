@@ -2,21 +2,18 @@ package repository;
 
 import entities.Lesson;
 import entities.Student;
+import entities.Term;
 import org.junit.jupiter.api.*;
+import repository.StudentRepo;
 import utils.HibernateSingleton;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class StudentRepoTest {
 
-
     private StudentRepo studentRepo=new StudentRepo();
-
 
     @BeforeAll
     static void setup(){
@@ -30,16 +27,8 @@ class StudentRepoTest {
     void addAndShowInfo() {
 
         //arrange
-        Set<Lesson> lessonList=new HashSet<>();
-        Lesson l1=new Lesson(null,"Physics",2,3,null,null,null);
-        Lesson l2=new Lesson(null,"math",4,12,null,null,null);
-
-        lessonList.add(l1);
-        lessonList.add(l2);
         var student=new Student(null,"firstName","lastName","Username","password",
-                lessonList);
-
-        student.setStudentLessonList(lessonList);
+                null);
 
         //act
         studentRepo.add(student);
@@ -53,7 +42,7 @@ class StudentRepoTest {
                 ()->assertEquals(loadedStudent.getLastName(),student.getLastName()),
                 ()->assertEquals(loadedStudent.getUsername(),student.getUsername()),
                 ()->assertEquals(loadedStudent.getPassword(),student.getPassword()),
-                ()->assertEquals(loadedStudent.getStudentLessonList(),student.getStudentLessonList())
+                ()->assertEquals(loadedStudent.getStudentTerm(),student.getStudentTerm())
         );
     }
 
@@ -71,14 +60,14 @@ class StudentRepoTest {
 
         //assert
         studentRepo.remove(student);
-        List<Student> accountList=studentRepo.showAll(student);
+        List<Student> accountList=studentRepo.showAll(Student.class);
         assertEquals(0,accountList.size());
     }
 
     @Test
     void update() {
         //arrange
-        var student=new Student(null,"firstName","firstName","Username","password",
+        var student=new Student(null,"f","s","u","p",
                 null);
 
 
@@ -104,11 +93,12 @@ class StudentRepoTest {
     }
 
 
-//    @AfterEach
-//    void tearDown() {
-//        studentRepo.hqlTruncate("Student");
-//    }
-//
+
+    @AfterEach
+    void tearDown() {
+        studentRepo.hqlTruncate("Student");
+    }
+
 
 
 
