@@ -12,6 +12,8 @@ public interface BaseServices<T> {
 
     public T showInfo(int id);
 
+    public T showInfo(String username);
+
     public List<T> showAll();
 
 }

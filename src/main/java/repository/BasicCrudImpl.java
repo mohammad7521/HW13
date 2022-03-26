@@ -6,9 +6,11 @@ import utils.HibernateSingleton;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
-public class BasicCrud<T> {
+public class BasicCrudImpl<T> {
 
 
     protected SessionFactory sessionFactory= HibernateSingleton.getInstance();
@@ -21,6 +23,7 @@ public class BasicCrud<T> {
             try {
                 session.save(t);
                 transaction.commit();
+                session.close();
                 return t;
             } catch (Exception e) {
                 transaction.rollback();
@@ -35,9 +38,9 @@ public class BasicCrud<T> {
         var transaction=session.beginTransaction();
 
         try{
-
             session.remove(t);
             transaction.commit();
+            session.close();
             return t;
         }catch (Exception e){
             transaction.rollback();
@@ -52,6 +55,7 @@ public class BasicCrud<T> {
             try {
                 session.update(t);
                 transaction.commit();
+                session.close();
             } catch (Exception e) {
                 transaction.rollback();
                 throw e;
@@ -59,18 +63,50 @@ public class BasicCrud<T> {
         }
     }
 
-    //based on id
-    public T showInfo(Integer ID,Class <T> tClass) {
-        var session=sessionFactory.openSession();
-        return  session.find(tClass,ID);
-
-    }
 
 
     //based on username
-    public T showInfo(String username,Class <T> tClass) {
-        var session=sessionFactory.openSession();
-        return session.find(tClass,username);
+    public T showInfo(Class<T> tClass,String username) {
+
+        List<T> result=new ArrayList<>();
+
+        try(var session=sessionFactory.openSession()) {
+            var trx=session.beginTransaction();
+
+            try {
+                var cb = session.getCriteriaBuilder();
+                var cq = cb.createQuery(tClass);
+                Root<T> root = cq.from(tClass);
+                cq.select(root).where(cb.equal(root.get("username"), username));
+                Query query = session.createQuery(cq);
+                result = query.getResultList();
+                trx.commit();
+                session.close();
+
+            }catch (Exception e){
+                trx.rollback();
+            }
+
+        }
+        return result.get(0);
+    }
+
+
+    public T showInfo(Class<T> tClass,int Id){
+        T t = null;
+        try (var session = sessionFactory.openSession()) {
+            var trx = session.beginTransaction();
+
+            try {
+                t = session.find(tClass, Id);
+                trx.commit();
+                session.close();
+
+            } catch (Exception e) {
+                trx.rollback();
+            }
+        }
+        return t;
     }
 
 

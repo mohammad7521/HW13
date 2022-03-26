@@ -1,39 +1,112 @@
 package repository;
 
-import entities.Lesson;
-import entities.Student;
-import entities.Term;
+import entities.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class StudentRepo extends BasicCrud<Student> {
+public class StudentRepo extends BasicCrudImpl<Student> {
 
-    //get the last term of a student
-    public Term getLastTerm(int studentID) {
 
-        Student student=showInfo(studentID,Student.class);
-        Set<Term>studentTerms=student.getStudentTerm();
-        Term lastTerm=studentTerms.stream().reduce((x,y)->y).orElse(null);
-        return lastTerm;
+    //show all lessons of student from previous term
+    public List<LessonTerm> showAllLessons(int studentId){
+
+        List<LessonTerm> lessonList=new ArrayList<>();
+        try(var session=sessionFactory.openSession()){
+
+            var trx=session.beginTransaction();
+
+            try{
+            String query="select a from LessonTerm a inner join StudentTerm b on a.studentTermLesson.id=b.id where b.termStudent.id=:studentId and a.passed=true";
+            var hql=session.createQuery(query);
+            hql.setParameter("studentId",studentId);
+            lessonList=hql.getResultList();
+            }catch (Exception e){
+                trx.rollback();
+            }
+        }
+        return lessonList;
     }
 
 
-    //assigning lessons to a term of a student
-    public void assignLessons(List<Lesson> lessonList,int studentID){
+    //show last term lessons
+    public StudentTerm lastTerm(int studentId){
 
-        Student student=showInfo(studentID,Student.class);
+            List<StudentTerm> studentTerms=null;
+            try(var session=sessionFactory.openSession()){
 
-        Term lastTerm=getLastTerm(studentID);
-        Term newTerm=new Term(lastTerm.getTermId()+1,null,
-                null,null,null);
+                var trx=session.beginTransaction();
 
-        for(Lesson l:lessonList){
-            newTerm.addStudentLessons(l);
+                try{
+                    String query="select a from StudentTerm a where a.termStudent.id=:studentId";
+                    var hql=session.createQuery(query);
+                    hql.setParameter("studentId",studentId);
+                    studentTerms=hql.getResultList();
+                }catch (Exception e){
+                    trx.rollback();
+                }
+            }
+
+            if (studentTerms.size()<1) return null;
+            else
+           return studentTerms.get(studentTerms.size()-1);
+    }
+
+
+    //get last term lessons
+    public List<LessonTerm> lastTermLessons(int lastTermId){
+
+        List<LessonTerm> lessonList=new ArrayList<>();
+        try(var session=sessionFactory.openSession()){
+
+            var trx=session.beginTransaction();
+
+            try{
+                String query="select a from LessonTerm a inner join StudentTerm b on a.studentTermLesson.id=b.id where b.id=:lastTermId";
+                var hql=session.createQuery(query);
+                hql.setParameter("lastTermId",lastTermId);
+                lessonList=hql.getResultList();
+            }catch (Exception e){
+                trx.rollback();
+            }
+        }
+        return lessonList;
+    }
+
+
+
+    //assign lessons to a term
+    public void assignLessons(List<LessonTerm> lessonList, StudentTerm st, Term masterTerm){
+
+        try (var session = sessionFactory.openSession()) {
+            var transaction = session.beginTransaction();
+            try {
+
+                st.setTermStudentLesson(lessonList);
+                st.setMasterStudentTerm(masterTerm);
+                session.save(st);
+                transaction.commit();
+                session.close();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         }
 
-        student.addTerm(newTerm);
+        try (var session = sessionFactory.openSession()) {
+            var transaction = session.beginTransaction();
+            try {
+                for (LessonTerm l:lessonList){
+                    l.setStudentTermLesson(st);
+                    session.update(l);
+                }
+                transaction.commit();
+                session.close();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+        }
 
     }
 

@@ -13,29 +13,23 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
-public class Lesson {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Lesson  {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer lessonId;
-
-    private String name;
-    private int unit;
-    private int grade;
-
-    @ManyToMany (mappedBy = "student_term_lesson")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Term> student_term_lesson;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Integer lessonId;
+    protected String name;
+    protected int unit;
 
 
-    @ManyToMany (mappedBy = "teacher_term_lesson")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Term> teacher_term_lesson;
-
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "Lesson{" +
+                "lessonId=" + lessonId +
+                ", name='" + name + '\'' +
+                ", unit=" + unit +
+                '}';
+    }
 }

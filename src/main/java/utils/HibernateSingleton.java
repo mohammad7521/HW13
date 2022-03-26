@@ -27,6 +27,9 @@ public class HibernateSingleton {
                     .addAnnotatedClass(Staff.class)
                     .addAnnotatedClass(Student.class)
                     .addAnnotatedClass(Teacher.class)
+                    .addAnnotatedClass(StudentTerm.class)
+                    .addAnnotatedClass(TeacherTerm.class)
+                    .addAnnotatedClass(LessonTerm.class)
                     .addAnnotatedClass(Term.class)
                     .buildMetadata()
                     .buildSessionFactory();

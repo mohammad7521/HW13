@@ -1,44 +1,51 @@
 package services;
 
 
-import entities.Lesson;
-import entities.Student;
-import entities.Term;
-import utils.DuplicateUser;
+import entities.*;
+import exceptionHandler.*;
 import repository.StudentRepo;
 
-import java.util.IntSummaryStatistics;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class StudentRepoServices implements BaseServices<Student>{
+public class StudentRepoServices implements BaseServices<Student> {
 
-    private static StudentRepo studentRepo=new StudentRepo();
+    private static StudentRepo studentRepo = new StudentRepo();
+    private static MasterTermServices masterTermServices = new MasterTermServices();
 
     @Override
     public Student add(Student student) {
-        if (studentRepo.showInfo(student.getUsername(), Student.class)!=null) {
-            return studentRepo.add(student);
+
+        if (checkUsername(student.getUsername())) {
+            throw new DuplicateUser("username already exists!");
         }
-        else throw new DuplicateUser("username already exists");
+        return studentRepo.add(student);
     }
 
     @Override
     public Student remove(int id) {
 
-        Student returnedStudent=studentRepo.showInfo(id,Student.class);
+        if (!checkId(id)) {
+            throw new NoSuchId();
+        }
+        Student returnedStudent = studentRepo.showInfo(Student.class, id);
         return studentRepo.remove(returnedStudent);
     }
 
     @Override
     public void update(Student student) {
+        if (!checkId(student.getStudentId())) {
+            throw new NoSuchId();
+        }
         studentRepo.update(student);
     }
 
     @Override
     public Student showInfo(int id) {
-        return studentRepo.showInfo(id,Student.class);
+        if (!checkId(id)) {
+            throw new NoSuchId();
+        }
+        return studentRepo.showInfo(Student.class, id);
     }
 
     @Override
@@ -46,68 +53,125 @@ public class StudentRepoServices implements BaseServices<Student>{
         return studentRepo.showAll(Student.class);
     }
 
-
+    @Override
     public Student showInfo(String username) {
-        return studentRepo.showInfo(username,Student.class);
+
+        if (!checkUsername(username)) {
+            throw new NoSuchId();
+        }
+        return studentRepo.showInfo(Student.class, username);
     }
 
 
     //student log in
-    public boolean logIn(String username,String password){
+    public boolean logIn(String username, String password) {
 
-        boolean logInCheck=false;
-        Student student=null;
+        boolean logInCheck = false;
+        Student student = showInfo(username);
 
-        student.setUsername(showInfo(username).getUsername());
-        student.setPassword(showInfo(username).getPassword());
-
-        if (student.getUsername().equals(username)) {
-            if (student.getPassword().equals(password)) {
-                logInCheck = true;
-            }
-        } else logInCheck = false;
-
+        if (student.getPassword().equals(password)) {
+            logInCheck = true;
+        }
         return logInCheck;
     }
 
 
-    //getting the current term of the student
-    public static Term lastTerm (int studentID){
-        return studentRepo.getLastTerm(studentID);
+    public boolean checkUsername(String username) {
+
+        boolean flag = false;
+        List<Student> studentList = showAll();
+
+        for (Student a : studentList) {
+            if (username.equals(a.getUsername())) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
+    //checking if the id exists in order to handle null pointer exception
+//of nat having an entity with such id
+    public boolean checkId(int Id) {
+
+        boolean flag = false;
+        List<Student> studentList = showAll();
+
+        for (Student s : studentList) {
+            if (s.getStudentId() == Id) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
     }
 
 
-    //checking if the student is eligible to select 24 units of lessons.
-    public boolean eligible(int studentID) {
-
-        double average;
-        Term lastTerm = lastTerm(studentID);
-        average = calculateLastTermLessons(studentID);
-        if (lastTerm.getTermId() > 1 && average>18 || lastTerm.getTermId()<2) {
-
-                return true;
-            } else return false;
+    //show lessons from previous terms
+    public List<LessonTerm> showAllLessons(int studentId) {
+        return studentRepo.showAllLessons(studentId);
     }
 
 
-    //calculating the average grades of lessons from last term
-    public static double calculateLastTermLessons ( int studentID){
-        Student student = studentRepo.showInfo(studentID, Student.class);
-
-        //getting last term
-        Term lastTerm = lastTerm(studentID);
-
-        //calculating average of lessons of last term
-        IntSummaryStatistics stats = lastTerm.getStudent_term_lesson().stream()
-                .map(Lesson::getGrade).mapToInt(Integer::intValue).summaryStatistics();
-
-        return stats.getAverage();
+    public StudentTerm lastTerm(int studentId) {
+        return studentRepo.lastTerm(studentId);
     }
 
 
+    public List<LessonTerm> lastTermLessons(StudentTerm st) {
 
-        //assign lessons to a term
-    public void assignLessons(List<Lesson> lessonList,int studentId){
-        studentRepo.assignLessons(lessonList,studentId);
+        return studentRepo.lastTermLessons(st.getId());
     }
+
+
+    public int calcAverage(List<LessonTerm> lessonList) {
+        int gradeSum = 0;
+
+        if (lessonList.size()<1)
+        for (LessonTerm l : lessonList) {
+
+            if (l.getGrade() > 0) {
+                gradeSum += l.getGrade();
+            } else throw new GradeNotSet();
+        }
+        int average = gradeSum / lessonList.size();
+
+        return average;
+    }
+
+
+    public boolean eligible(int studentId) {
+
+        List<LessonTerm> lastTermLessons=lastTermLessons(lastTerm(studentId));
+        boolean eligible;
+        if (lastTerm(studentId)==null ||lastTermLessons.size()<1) {
+            eligible = true;
+        } else if (calcAverage(lastTermLessons(lastTerm(studentId))) >= 18) {
+            eligible = true;
+        } else eligible = false;
+
+        return eligible;
+    }
+
+
+    public void assignLessons(int studentId, List<LessonTerm> lessonList) {
+
+
+        if (lessonList.stream().distinct().count() < lessonList.size()) {
+            throw new DuplicateLessons();
+        }
+        for (LessonTerm ls : lessonList) {
+            if (ls.isPassed() == true) {
+                throw new LessonPassed();
+            }
+        }
+
+
+        Student student = showInfo(studentId);
+        StudentTerm st = new StudentTerm(null, student, null, null);
+        Term lastMasterTerm = masterTermServices.getLastTerm();
+        studentRepo.assignLessons(lessonList, st, lastMasterTerm);
+        masterTermServices.assignStudentTerm(st);
+    }
+
 }

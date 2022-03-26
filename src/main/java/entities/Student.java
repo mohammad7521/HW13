@@ -22,21 +22,32 @@ public class Student {
 
     private String firstName;
     private String lastName;
+
+    @Column(unique = true)
     private String username;
     private String password;
 
 
 
-    @ManyToMany
-    @JoinTable(name="studentTerm",
-            joinColumns = @JoinColumn(name="studentId"),
-            inverseJoinColumns = @JoinColumn(name = "termID"))
+    @OneToMany(mappedBy = "termStudent")
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Set<Term> studentTerm;
+    private Set<StudentTerm> studentTerm;
 
 
-    public void addTerm(Term term){
-        studentTerm.add(term);
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId=" + studentId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+//                ", studentTerm=" + studentTerm +
+                '}';
     }
 
+
+    public void addStudentTerm(StudentTerm st){
+        studentTerm.add(st);
+    }
 }

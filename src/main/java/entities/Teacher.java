@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -20,21 +21,33 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer TeacherID;
 
-
     private String firstName;
     private String lastName;
-    private String userName;
+
+    @Column(unique = true)
+    private String username;
     private String password;
     private long salary;
     private boolean isBoardMember;
 
 
 
-    @ManyToMany
-    @JoinTable(name="teacher_term",
-            joinColumns = @JoinColumn(name="teacherId"),
-            inverseJoinColumns = @JoinColumn(name = "termId"))
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private Set<Lesson> teacherTerm;
+    @OneToMany(mappedBy = "termTeacher")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    private Set<TeacherTerm> teacherTerm;
 
+
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "TeacherID=" + TeacherID +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userName='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", salary=" + salary +
+                ", isBoardMember=" + isBoardMember +
+                '}';
+    }
 }

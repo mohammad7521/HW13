@@ -2,5 +2,5 @@ package repository;
 
 import entities.Lesson;
 
-public class LessonRepo extends BasicCrud<Lesson> {
+public class LessonRepo extends BasicCrudImpl<Lesson> {
 }

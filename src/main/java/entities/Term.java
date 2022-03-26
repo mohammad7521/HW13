@@ -20,35 +20,31 @@ public class Term {
     private Integer termId;
 
 
-
-    @ManyToMany (mappedBy = "studentTerm")
+    @OneToMany (mappedBy = "masterStudentTerm")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Student> termStudent;
+    private List<StudentTerm> termStudent;
 
 
 
-    @ManyToMany (mappedBy = "teacherTerm")
+    @OneToMany (mappedBy = "masterTeacherTerm")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Teacher> termTeacher;
+    private List<TeacherTerm> termTeacher;
 
 
-    @ManyToMany
-    @JoinTable(name="student_term_lesson",
-            joinColumns = @JoinColumn(name="student_termId"),
-            inverseJoinColumns = @JoinColumn(name = "lessonId"))
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Set<Lesson> student_term_lesson;
+    public void addStudentTerm(StudentTerm st){
+        termStudent.add(st);
+    }
 
 
-    @ManyToMany
-    @JoinTable(name="teacher_term_lesson",
-            joinColumns = @JoinColumn(name="teacher_termId"),
-            inverseJoinColumns = @JoinColumn(name = "lessonId"))
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private Set<Lesson> teacher_term_lesson;
+    public void addTeacherTerm(TeacherTerm tt){
+        termTeacher.add(tt);
+    }
 
-    //assign lessons to a term of a student
-    public void addStudentLessons(Lesson lesson){
-        student_term_lesson.add(lesson);
+
+    @Override
+    public String toString() {
+        return "Term{" +
+                "termId=" + termId +
+                '}';
     }
 }

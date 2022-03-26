@@ -25,9 +25,9 @@ public class   MainConsole {
                     case 2:
                         StudentConsole.studentLogInMenu();
                         break;
-//                    case 3:
-//                        TeacherConsole.teacherLogInMenu();
-//                        break;
+                    case 3:
+                        TeacherConsole.teacherLogInMenu();
+                        break;
                 }
             } catch (InputMismatchException e) {
                 System.out.println("please enter a number!");
