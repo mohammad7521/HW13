@@ -18,8 +18,64 @@ public class StaffConsole {
     public static LessonRepoServices lessonService = new LessonRepoServices();
     public static MasterTermServices masterTermServices=new MasterTermServices();
 
-    public static void educationStaffMenu() {
 
+
+    public static void staffLogInMenu(){
+        educationStaffService.addAdmin();
+        boolean flag = true;
+        while (flag) {
+            System.out.println("1-Register: ");
+            System.out.println("2-Sign in: ");
+            System.out.println("0-exit: ");
+
+            Scanner scanner = new Scanner(System.in);
+
+            try {
+                int userEntry = scanner.nextInt();
+                switch (userEntry) {
+                    case 1:
+                        System.out.println("enter a username: ");
+                        String username = scanner.next();
+                        System.out.println("enter a password: ");
+                        String password = scanner.next();
+                        System.out.println("enter first name: ");
+                        String firstName = scanner.next();
+                        System.out.println("enter last name: ");
+                        String lastName = scanner.next();
+                        System.out.println("enter salary");
+                        int salary=scanner.nextInt();
+
+                        Staff staff = new Staff(null, firstName, lastName, username, password,salary);
+                        educationStaffService.add(staff);
+                        System.out.println("sign up successfull");
+                        break;
+                    case 2:
+                        System.out.println("please enter your username: ");
+                        username = scanner.next();
+                        System.out.println("please enter your password: ");
+                        password = scanner.next();
+                        if (educationStaffService.logIn(username, password)) {
+                            System.out.println("log in successful! ");
+                            staffMainMenu(username);
+                            break;
+                        } else System.out.println("password is wrong! ");
+                        break;
+                    case 0:
+                        MainConsole.mainMenu();
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("please enter a valid number ! ");
+            } catch (NoSuchId e) {
+                System.out.println("id does not exist");
+            } catch (DuplicateUser e) {
+                System.out.println("username already exists!");
+            }
+        }
+    }
+    public static void staffMainMenu(String username) {
+
+        Staff staff=educationStaffService.showInfo(username);
         boolean flag = true;
         while (flag) {
             System.out.println("1-employee management: ");
@@ -27,6 +83,7 @@ public class StaffConsole {
             System.out.println("3-Teacher management: ");
             System.out.println("4-Lesson management: ");
             System.out.println("5-term management: ");
+            System.out.println("6-show salary: ");
             System.out.println("0-exit: ");
 
             Scanner scanner = new Scanner(System.in);
@@ -48,8 +105,14 @@ public class StaffConsole {
                         break;
                     case 5:
                         termManagementMenu();
+                        break;
+                    case 6:
+                        if (!staff.getUsername().equals("admin")){
+                            System.out.println(staff.getSalary());
+                            break;
+                        }else System.out.println("this is the admin user! please log in with your own user!");
                     case 0:
-                        flag = false;
+                        MainConsole.mainMenu();
                         break;
                 }
             } catch (InputMismatchException e) {
@@ -135,7 +198,7 @@ public class StaffConsole {
                     break;
 
                 case 0:
-                    educationStaffMenu();
+                    staffLogInMenu();
                     break;
             }
         } catch (DuplicateUser e) {
@@ -150,6 +213,7 @@ public class StaffConsole {
         System.out.println("1-add a new student: ");
         System.out.println("2-remove a student: ");
         System.out.println("3-update an student: ");
+        System.out.println("0-exit: ");
 
         Scanner scanner = new Scanner(System.in);
         int userEntry = scanner.nextInt();
@@ -198,6 +262,8 @@ public class StaffConsole {
                     studentService.update(student);
                     System.out.println("update successful");
                     break;
+                case 0:
+                    break;
             }
         } catch (DuplicateUser e) {
             System.out.println("Username already exists! ");
@@ -214,6 +280,7 @@ public class StaffConsole {
         System.out.println("2-remove a teacher: ");
         System.out.println("3-update a teacher: ");
         System.out.println("4-assign lessons to a teacher: ");
+        System.out.println("0-exit: ");
         Scanner scanner = new Scanner(System.in);
         int userEntry = scanner.nextInt();
 
@@ -318,6 +385,8 @@ public class StaffConsole {
                     }catch (DuplicateLessons e){
                         System.out.println("you have selected a lesson twice! please check again");
                     }
+                case 0:
+                    break;
             }
         } catch (NoSuchId e) {
             System.out.println("user id does not exist!");
@@ -340,13 +409,15 @@ public class StaffConsole {
         try {
             switch (userEntry) {
                 case 1:
+                    scanner.nextLine();
                     System.out.println("enter lesson name: ");
-                    String lessonName = scanner.nextLine();
+                    String lessonName = scanner.next();
                     System.out.println("enter lesson units:");
                     int units = scanner.nextInt();
                     Lesson lesson = new Lesson(null, lessonName, units);
 
                     lessonService.add(lesson);
+                    System.out.println("lesson added successfully!");
                     break;
 
                 case 2:
@@ -408,7 +479,6 @@ public class StaffConsole {
                     System.out.println(term);
                     System.out.println("new term has been set");
                     break;
-
 
             }
         }catch (InputMismatchException e){

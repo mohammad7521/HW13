@@ -12,6 +12,7 @@ public class StudentRepoServices implements BaseServices<Student> {
 
     private static StudentRepo studentRepo = new StudentRepo();
     private static MasterTermServices masterTermServices = new MasterTermServices();
+    private static LessonTermServices lts=new LessonTermServices();
 
     @Override
     public Student add(Student student) {
@@ -120,14 +121,16 @@ public class StudentRepoServices implements BaseServices<Student> {
 
     public List<LessonTerm> lastTermLessons(StudentTerm st) {
 
+        if (st!=null)
         return studentRepo.lastTermLessons(st.getId());
+        else return null;
+
     }
 
 
     public int calcAverage(List<LessonTerm> lessonList) {
         int gradeSum = 0;
 
-        if (lessonList.size()<1)
         for (LessonTerm l : lessonList) {
 
             if (l.getGrade() > 0) {
@@ -144,7 +147,7 @@ public class StudentRepoServices implements BaseServices<Student> {
 
         List<LessonTerm> lastTermLessons=lastTermLessons(lastTerm(studentId));
         boolean eligible;
-        if (lastTerm(studentId)==null ||lastTermLessons.size()<1) {
+        if (lastTerm(studentId)==null ||lastTermLessons==null) {
             eligible = true;
         } else if (calcAverage(lastTermLessons(lastTerm(studentId))) >= 18) {
             eligible = true;
@@ -166,6 +169,10 @@ public class StudentRepoServices implements BaseServices<Student> {
             }
         }
 
+        for (LessonTerm lt:lessonList){
+
+        }
+
 
         Student student = showInfo(studentId);
         StudentTerm st = new StudentTerm(null, student, null, null);
@@ -174,4 +181,17 @@ public class StudentRepoServices implements BaseServices<Student> {
         masterTermServices.assignStudentTerm(st);
     }
 
+    public List<LessonTerm> showUnpassed(){
+
+        List<LessonTerm> lt=lts.showAll();
+        List<LessonTerm>unpassedLessonTerm=new ArrayList<>();
+        for (LessonTerm l:lt){
+            if (l.getStudentTermLesson()==null)
+                unpassedLessonTerm.add(l);
+        }
+        if (unpassedLessonTerm.size()==0)
+            throw new NoLessonRemaining();
+        else return unpassedLessonTerm;
+
+    }
 }

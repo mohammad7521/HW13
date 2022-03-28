@@ -90,6 +90,7 @@ public class TeacherConsole {
                     case 3:
                         System.out.println("your salary is: ");
                         System.out.println(teacherServices.showInfo(teacher.getTeacherID()).getSalary());
+                        break;
 
                     case 0:
                         teacherLogInMenu();

@@ -1,6 +1,8 @@
 package services;
 
+import entities.LessonTerm;
 import entities.Staff;
+import entities.Student;
 import repository.StaffRepo;
 import exceptionHandler.DuplicateUser;
 import exceptionHandler.NoSuchId;
@@ -92,4 +94,29 @@ public class StaffRepoServices implements BaseServices<Staff> {
         }
         return flag;
     }
+
+
+    public void addAdmin(){
+
+        Staff admin=new Staff(null,null,null,"admin","admin",0);
+        if (checkUsername("admin"));
+
+        else add(admin);
+    }
+
+
+    //staff log in
+    public boolean logIn(String username, String password) {
+
+        boolean logInCheck = false;
+        Staff staff = showInfo(username);
+
+        if (staff.getPassword().equals(password)) {
+            logInCheck = true;
+        }
+        return logInCheck;
+    }
+
+
+
 }

@@ -20,7 +20,7 @@ public class   MainConsole {
                 int userSelect = scanner.nextInt();
                 switch (userSelect) {
                     case 1:
-                        StaffConsole.educationStaffMenu();
+                        StaffConsole.staffLogInMenu();
                         break;
                     case 2:
                         StudentConsole.studentLogInMenu();

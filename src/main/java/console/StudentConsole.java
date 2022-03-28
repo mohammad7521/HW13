@@ -17,7 +17,7 @@ public class StudentConsole {
     public static StudentRepoServices studentService = new StudentRepoServices();
     public static LessonRepoServices lessonRepoServices = new LessonRepoServices();
     public static LessonStudentServices lessonStudentServices = new LessonStudentServices();
-    public static LessonTermServices lessonTermServices=new LessonTermServices();
+    public static LessonTermServices lessonTermServices = new LessonTermServices();
 
     public static void studentLogInMenu() {
 
@@ -115,7 +115,7 @@ public class StudentConsole {
                             System.out.println();
                         }
 
-                        List<LessonTerm> allLessons = lessonTermServices.showAll();
+                        List<LessonTerm> allLessons = studentService.showUnpassed();
                         for (LessonTerm l : allLessons) {
                             System.out.println(l);
                         }
@@ -158,7 +158,6 @@ public class StudentConsole {
                         } catch (DuplicateLessons e) {
                             System.out.println("you have selected a lesson twice! please check again");
                         }
-
                     case 0:
                         studentLogInMenu();
 
@@ -167,6 +166,8 @@ public class StudentConsole {
                 System.out.println("pleas enter a valid number");
             } catch (GradeNotSet e) {
                 System.out.println("the grade for your last term's lessons has not been set! please ask the teacher to set your grade!");
+            } catch (NoLessonRemaining e) {
+                System.out.println("lessons for the new term have not been added to the system! please wait or call the education staff");
             }
         }
     }
